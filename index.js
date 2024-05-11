@@ -5,7 +5,10 @@ const morgan = require('morgan');
 const cors = require('cors')
 const swaggerUI = require("swagger-ui-express");
 const swaggerSpec = require("./swagger");
+const multer = require('multer');
+const xlsx = require('xlsx');
 
+const upload = multer({ dest: '/tmp/' });
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config()
 }
@@ -118,6 +121,27 @@ app.get('/getEligibleLenders', async (req, res, next) => {
         // console.log({lender, result});
     });
     res.status(200).send(eligibleLenders);
+});
+
+// Define a route to handle file uploads
+app.post('/upload', upload.single('excelFile'), async (req, res) => {
+    // Check if a file was uploaded
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    // Read the uploaded file
+    const workbook = xlsx.readFile(req.file.path);
+
+    // Assuming only one sheet in the Excel file
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+
+    // Convert sheet data to JSON
+    const jsonData = xlsx.utils.sheet_to_json(sheet);
+    // Send the JSON data in the response
+    const result = await balanceSheetService.process({transactions: jsonData, user_id: req.body.user_id, ...req.body});
+    res.send(result);
 });
 
 

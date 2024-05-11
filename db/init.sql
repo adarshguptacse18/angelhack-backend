@@ -16,10 +16,10 @@ CREATE TABLE COMPANY_INFO (
     "type" text,
     "age" text,
     "size" INTEGER,
-    "user_id" INTEGER,
+    "user_id" text,
     "pan"  char(10),
-    "annual_revenue"  INTEGER,
-    "annual_profit" INTEGER,
+    "annual_revenue" BIGINT ,
+    "annual_profit" BIGINT,
     "credit_score" INTEGER,
     "loan_amount" INTEGER,
     "loan_tenure" INTEGER, -- in months
