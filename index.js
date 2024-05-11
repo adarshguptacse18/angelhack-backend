@@ -11,9 +11,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 
 const PanInfo = require('./models/pan_info');
+const User = require('./models/user');
 
 const signUpService = require('./services/signup_service');
 const balanceSheetService = require('./services/balanceSheetService');
+const Company = require('./models/company');
 
 
 const app = express();
@@ -55,6 +57,26 @@ app.get('/getCreditScore', async (req, res, next) => {
     }
 });
 
+app.get('/getCompanyData', async (req, res, next) => {
+    try {
+        const { user_id } = req.query;
+        const companyData = await new Company({ user_id }).getCompanyDataFromUserId();
+        res.status(200).send(companyData);
+    } catch (err) {
+        next(err);
+    }
+});
+
+app.get('/getUserData', async (req, res, next) => {
+    try {
+        const { user_id } = req.query;
+        const userData = await new User({ user_id }).getUserDataByUserId();
+        res.status(200).send(userData);
+    } catch (err) {
+        next(err);
+    }
+});
+
 app.post('/signUp', async (req, res, next) => {
     try {
         const data = await signUpService.signUp(req.body);
@@ -73,6 +95,7 @@ app.post('/balanceSheet', async (req, res, next) => {
         next(err);
     }
 });
+
 
 app.use((err, req, res, next) => {
     const status = err.status || 500;
