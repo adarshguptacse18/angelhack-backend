@@ -36,8 +36,9 @@ class LoanApplication {
             if (result.rows.length > 0) {
                 return result.rows[0];
             }
-            throw new Error("User not found");
+            throw new Error("loan application not found");
         } catch (err) {
+            console.log(err); User
             throw new Error(err);
         }
     }
@@ -50,6 +51,22 @@ class LoanApplication {
             if (result.rows.length > 0) {
                 return result.rows[0];
             }
+        } catch (err) {
+            console.log(err);
+            throw new Error(err);
+        }
+    }
+
+    async getAllLoansByLender() {
+        try {
+            const statement = 'SELECT * FROM loan_application WHERE lender_id=$1';
+            const values = [this.lender_id];
+            console.log({statement, values})
+            const result = await db.query(statement, values);
+            if (result.rows.length > 0) {
+                return result.rows;
+            }
+            throw new Error("no loans found not found");
         } catch (err) {
             console.log(err);
             throw new Error(err);

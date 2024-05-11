@@ -159,6 +159,11 @@ app.post('/updateLoanStatus', async (req, res) => {
     res.send(result);
 });
 
+app.get('/getAllLoansByLender', async (req, res) => {
+    const args = req.query;
+    const result = await new LoanApplication(args).getAllLoansByLender();
+    res.send(result);
+});
 app.use((err, req, res, next) => {
     const status = err.status || 500;
     res.status(status).json(err.message);

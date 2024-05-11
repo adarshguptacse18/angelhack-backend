@@ -50,4 +50,4 @@ CREATE TABLE LOAN_APPLICATION (
     "loan_tenure" INTEGER,
     "status" text,
     "interest_rate" FLOAT
-);
+); 
