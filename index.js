@@ -17,6 +17,7 @@ if (process.env.NODE_ENV !== 'production') {
 const PanInfo = require('./models/pan_info');
 const User = require('./models/user');
 const LenderInfo = require('./models/lender_info');
+const LoanApplication = require('./models/loan_application');
 
 const signUpService = require('./services/signup_service');
 const balanceSheetService = require('./services/balanceSheetService');
@@ -108,20 +109,21 @@ app.post('/balanceSheet', async (req, res, next) => {
 app.get('/getEligibleLenders', async (req, res, next) => {
     const { user_id, loan_amount, loan_tenure } = req.query;
     const companyData = await new Company({ user_id }).getCompanyDataFromUserId();
-    let { credit_score, financial_health_score} = companyData;
+    let { credit_score, financial_health_score } = companyData;
     credit_score = parseInt(credit_score) / 10;
-    financial_health_score = parseInt(financial_health_score || '80');  
+    financial_health_score = parseInt(financial_health_score || '80');
 
     console.log({ financial_health_score, credit_score });
     const getAllLendersData = await new LenderInfo({}).getAllLendersData();
     const eligibleLenders = getAllLendersData.filter((lender) => {
         const result = lender.min_finance_score <= financial_health_score && lender.min_lending_score <= credit_score && lender.max_loan >= loan_amount && lender.max_tenure >= loan_tenure;
-        console.log(lender, lender.min_finance_score <= financial_health_score, lender.min_lending_score <= credit_score, lender.max_loan >= loan_amount ,lender.max_tenure >= loan_tenure);
+        console.log(lender, lender.min_finance_score <= financial_health_score, lender.min_lending_score <= credit_score, lender.max_loan >= loan_amount, lender.max_tenure >= loan_tenure);
         return result;
         // console.log({lender, result});
     });
     res.status(200).send(eligibleLenders);
 });
+
 
 // Define a route to handle file uploads
 app.post('/upload', upload.single('excelFile'), async (req, res) => {
@@ -140,10 +142,22 @@ app.post('/upload', upload.single('excelFile'), async (req, res) => {
     // Convert sheet data to JSON
     const jsonData = xlsx.utils.sheet_to_json(sheet);
     // Send the JSON data in the response
-    const result = await balanceSheetService.process({transactions: jsonData, user_id: req.body.user_id, ...req.body});
+
+    const result = await balanceSheetService.process({ transactions: jsonData, user_id: req.body.user_id, ...req.body });
     res.send(result);
 });
 
+app.post('/apply', async (req, res) => {
+    const args = req.body;
+    const result = await new LoanApplication(args).create();
+    res.send(result);
+});
+
+app.post('/updateLoanStatus', async (req, res) => {
+    const args = req.body;
+    const result = await new LoanApplication(args).updateLoanStatus();
+    res.send(result);
+});
 
 app.use((err, req, res, next) => {
     const status = err.status || 500;

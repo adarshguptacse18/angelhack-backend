@@ -24,7 +24,8 @@ CREATE TABLE COMPANY_INFO (
     "loan_amount" INTEGER,
     "loan_tenure" INTEGER, -- in months
     "late_payments" INTEGER,
-    "financial_health_score" INTEGER
+    "financial_health_score" INTEGER,
+    "month_wise_deposits" json,
 );
 
 
@@ -37,5 +38,15 @@ CREATE TABLE LENDER_INFO (
     "logo_url" text,
     "max_tenure" INTEGER,
     "max_loan" INTEGER,
+    "interest_rate" FLOAT
+);
+
+CREATE TABLE LOAN_APPLICATION (
+    "id" SERIAL PRIMARY KEY,
+    "user_id" text,
+    "lender_id" INTEGER,
+    "loan_amount" INTEGER,
+    "loan_tenure" INTEGER,
+    "status" text,
     "interest_rate" FLOAT
 );
