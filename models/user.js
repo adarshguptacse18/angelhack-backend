@@ -19,6 +19,7 @@ class User {
             }
             throw new Error("Unable to create user");
         } catch (err) {
+            console.log("unable to create user");
             console.log(err);
             throw new Error(err);
         }
