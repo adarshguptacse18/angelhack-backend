@@ -110,7 +110,7 @@ app.get('/getEligibleLenders', async (req, res, next) => {
     const { user_id, loan_amount, loan_tenure } = req.query;
     const companyData = await new Company({ user_id }).getCompanyDataFromUserId();
     let { credit_score, financial_health_score } = companyData;
-    credit_score = parseInt(credit_score) / 10;
+    credit_score = parseInt(credit_score) / 100;
     financial_health_score = parseInt(financial_health_score || '80');
 
     console.log({ financial_health_score, credit_score });

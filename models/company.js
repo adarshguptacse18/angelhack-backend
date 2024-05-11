@@ -1,11 +1,14 @@
 const db = require('../db');
 
 class Company {
-    constructor({ id, company_name, user_id, pan, annual_revenue, annual_profit, credit_score, late_payments, loan_amount, loan_tenure, month_wise_deposits, month_wise_withdrawal, financial_health_score }) {
+    constructor({ id, age, size, type, company_name, user_id, pan, annual_revenue, annual_profit, credit_score, late_payments, loan_amount, loan_tenure, month_wise_deposits, month_wise_withdrawal, financial_health_score }) {
         // initialise all these variables
         this.id = id;
         this.name = company_name;
         this.user_id = user_id;
+        this.age = age;
+        this.size = size;
+        this.type = type;
         this.pan = pan;
         this.annual_revenue = annual_revenue;
         this.annual_profit = annual_profit;
@@ -45,8 +48,8 @@ class Company {
     async create() {
         try {
             // update all the fields into company table
-            const statement = 'INSERT INTO company_info(name, user_id, pan, annual_revenue, annual_profit, credit_score, late_payments, loan_amount, loan_tenure, financial_health_score, month_wise_deposits, month_wise_withdrawal) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)';
-            const values = [this.name, this.user_id, this.pan, this.annual_revenue, this.annual_profit, this.credit_score, this.late_payments, this.loan_amount, this.loan_tenure, this.financial_health_score, this.month_wise_deposits, this.month_wise_withdrawal];
+            const statement = 'INSERT INTO company_info(name, user_id, pan, annual_revenue, annual_profit, credit_score, late_payments, loan_amount, loan_tenure, financial_health_score, month_wise_deposits, month_wise_withdrawal, age, size, type) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)';
+            const values = [this.name, this.user_id, this.pan, this.annual_revenue, this.annual_profit, this.credit_score, this.late_payments, this.loan_amount, this.loan_tenure, this.financial_health_score, this.month_wise_deposits, this.month_wise_withdrawal, this.age, this.size, this.type];
             const result = await db.update(statement, values);
             if (result.rows.length > 0) {
                 return result.rows[0];
