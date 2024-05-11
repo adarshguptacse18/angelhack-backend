@@ -13,6 +13,7 @@ if (process.env.NODE_ENV !== 'production') {
 const PanInfo = require('./models/pan_info');
 
 const signUpService = require('./services/signup_service');
+const balanceSheetService = require('./services/balanceSheetService');
 
 
 const app = express();
@@ -48,7 +49,7 @@ app.get('/getCreditScore', async (req, res, next) => {
         const { pan } = req.query;
         const panInfo = await (new PanInfo({ pan })).getDataByPan();
         const { LatePayments, CreditScore } = panInfo.data;
-        res.status(200).send({ LatePayments, CreditScore});
+        res.status(200).send({ LatePayments, CreditScore });
     } catch (err) {
         next(err);
     }
@@ -58,7 +59,16 @@ app.post('/signUp', async (req, res, next) => {
     try {
         const data = await signUpService.signUp(req.body);
         res.send(data);
-       return user;
+        return user;
+    } catch (err) {
+        next(err);
+    }
+});
+
+app.post('/balanceSheet', async (req, res, next) => {
+    try {
+        const data = await balanceSheetService.process(req.body);
+        res.send(data);
     } catch (err) {
         next(err);
     }
