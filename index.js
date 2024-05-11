@@ -21,6 +21,7 @@ const LoanApplication = require('./models/loan_application');
 
 const signUpService = require('./services/signup_service');
 const balanceSheetService = require('./services/balanceSheetService');
+const getExplanation = require('./services/geminiService');
 const Company = require('./models/company');
 
 
@@ -164,6 +165,13 @@ app.get('/getAllLoansByLender', async (req, res) => {
     const result = await new LoanApplication(args).getAllLoansByLender();
     res.send(result);
 });
+
+app.get('/getExplanation', async (req, res) => {
+    const {user_id} = req.query;
+    const companyData = await new Company({ user_id }).getCompanyDataFromUserId();
+    res.send(await getExplanation(companyData));
+});
+
 app.use((err, req, res, next) => {
     const status = err.status || 500;
     res.status(status).json(err.message);
