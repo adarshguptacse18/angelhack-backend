@@ -4,7 +4,7 @@ const Company = require('../models/company');
 class BalanceSheetService {
     async process(args) {
         const allTransactions = args.transactions;
-        const monthWiseDeposits = analyzeTransactions(allTransactions);
+        const { monthlyDeposits, monthlyWithdrawals } = analyzeTransactions(allTransactions);
         console.log({l: allTransactions.length});
         const totalIncome = allTransactions.reduce((acc, curr) => {
             if (curr["DEPOSIT AMT"]) {
@@ -17,7 +17,7 @@ class BalanceSheetService {
         const company_id = await new Company({ user_id }).getCompanyIdFromUserId();
         console.log({ totalIncome, user_id, loan_tenure, loan_amount});
 
-        return await new Company({ annual_revenue: totalIncome, loan_tenure, loan_amount, id: company_id.id, month_wise_deposits: monthWiseDeposits }).save();
+        return await new Company({ annual_revenue: totalIncome, loan_tenure, loan_amount, id: company_id.id, month_wise_deposits: monthlyDeposits , month_wise_withdrawal: monthlyWithdrawals}).save();
     }
 }
 
@@ -45,6 +45,7 @@ function analyzeTransactions(transactions) {
 
     if (!transactions) return;
     const monthlyDeposits = {};
+    const monthlyWithdrawals = {};
     let allowedDates = [];
     console.log(transactions[0])
     for (const transaction of transactions) {
@@ -68,12 +69,14 @@ function analyzeTransactions(transactions) {
         if (!(allowedDates.find(d => d[0] == year && d[1] == month))) continue;
         if (!monthlyDeposits[date]) {
             monthlyDeposits[date] = 0;
+            monthlyWithdrawals[date] = 0;
         }
 
         monthlyDeposits[date] += transaction['DEPOSIT AMT'];
+        monthlyWithdrawals[date] += transaction['WITHDRAWAL AMT'];
     }
 
-    return monthlyDeposits;
+    return {monthlyDeposits, monthlyWithdrawals};
 }
 
 module.exports = new BalanceSheetService();

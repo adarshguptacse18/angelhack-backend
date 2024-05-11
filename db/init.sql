@@ -26,6 +26,7 @@ CREATE TABLE COMPANY_INFO (
     "late_payments" INTEGER,
     "financial_health_score" INTEGER,
     "month_wise_deposits" json,
+    "month_wise_withdrawal" json
 );
 
 
