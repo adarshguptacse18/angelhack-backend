@@ -12,6 +12,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 const PanInfo = require('./models/pan_info');
 
+const signUpService = require('./services/signup_service');
+
 
 const app = express();
 
@@ -52,6 +54,15 @@ app.get('/getCreditScore', async (req, res, next) => {
     }
 });
 
+app.post('/signUp', async (req, res, next) => {
+    try {
+        const data = await signUpService.signUp(req.body);
+        res.send(data);
+       return user;
+    } catch (err) {
+        next(err);
+    }
+});
 
 app.use((err, req, res, next) => {
     const status = err.status || 500;
