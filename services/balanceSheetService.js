@@ -5,19 +5,22 @@ class BalanceSheetService {
     async process(args) {
         const allTransactions = args.transactions;
         const { monthlyDeposits, monthlyWithdrawals } = analyzeTransactions(allTransactions);
-        console.log({l: allTransactions.length});
+        console.log({ l: allTransactions.length });
         const totalIncome = allTransactions.reduce((acc, curr) => {
             if (curr["DEPOSIT AMT"]) {
                 return acc + parseInt(curr["DEPOSIT AMT"]);
             }
             return acc;
         }, 0);
-        const {user_id, loan_tenure, loan_amount} = args;
+        const { user_id, loan_tenure, loan_amount } = args;
         console.log({ totalIncome, user_id, loan_tenure, loan_amount });
         const company_id = await new Company({ user_id }).getCompanyIdFromUserId();
-        console.log({ totalIncome, user_id, loan_tenure, loan_amount});
-
-        return await new Company({ annual_revenue: totalIncome, loan_tenure, loan_amount, id: company_id.id, month_wise_deposits: monthlyDeposits , month_wise_withdrawal: monthlyWithdrawals}).save();
+        console.log({ totalIncome, user_id, loan_tenure, loan_amount });
+        let cibil_score = 800;
+        const {score: financial_health_score} = await fetch(
+            `http://13.201.198.195:5000/predict?data={"income_annum": ${totalIncome}, "loan_amount": ${loan_amount}, "loan_term": ${loan_tenure}, "cibil_score": ${cibil_score}}&model_path=/home/ubuntu/Downloads/hackbanglore/reg_model.pkl`
+        ).then(res => res.json());
+        return await new Company({ annual_revenue: totalIncome, loan_tenure, loan_amount, id: company_id.id, month_wise_deposits: monthlyDeposits, month_wise_withdrawal: monthlyWithdrawals, financial_health_score }).save();
     }
 }
 
@@ -76,7 +79,7 @@ function analyzeTransactions(transactions) {
         monthlyWithdrawals[date] += transaction['WITHDRAWAL AMT'];
     }
 
-    return {monthlyDeposits, monthlyWithdrawals};
+    return { monthlyDeposits, monthlyWithdrawals };
 }
 
 module.exports = new BalanceSheetService();

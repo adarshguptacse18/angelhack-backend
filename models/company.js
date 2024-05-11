@@ -1,7 +1,7 @@
 const db = require('../db');
 
 class Company {
-    constructor({ id, company_name, user_id, pan, annual_revenue, annual_profit, credit_score, late_payments, loan_amount, loan_tenure, financial_health_score, month_wise_deposits, month_wise_withdrawal }) {
+    constructor({ id, company_name, user_id, pan, annual_revenue, annual_profit, credit_score, late_payments, loan_amount, loan_tenure, month_wise_deposits, month_wise_withdrawal, financial_health_score }) {
         // initialise all these variables
         this.id = id;
         this.name = company_name;
@@ -13,9 +13,9 @@ class Company {
         this.late_payments = late_payments;
         this.loan_amount = loan_amount;
         this.loan_tenure = loan_tenure;
-        this.financial_health_score = financial_health_score;
         this.month_wise_deposits = month_wise_deposits;
         this.month_wise_withdrawal = month_wise_withdrawal;
+        this.financial_health_score = Math.floor(financial_health_score);
     }
 
     async save() {
