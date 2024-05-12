@@ -17,11 +17,16 @@ class BalanceSheetService {
         const company_id = await new Company({ user_id }).getCompanyIdFromUserId();
         console.log({ totalIncome, user_id, loan_tenure, loan_amount });
         let cibil_score = 800;
-        const {score: financial_health_score} = await fetch(
-            `http://13.201.198.195:5000/predict?data={"income_annum": ${totalIncome}, "loan_amount": ${loan_amount}, "loan_term": ${loan_tenure}, "cibil_score": ${cibil_score}}&model_path=/home/ubuntu/Downloads/hackbanglore/reg_model.pkl`
-        ).then(res => res.json());
-        return await new Company({ annual_revenue: totalIncome, loan_tenure, loan_amount, id: company_id.id, month_wise_deposits: monthlyDeposits, month_wise_withdrawal: monthlyWithdrawals, financial_health_score }).save();
-    }
+        try {
+            const { score: financial_health_score } = await fetch(
+                `http://13.201.198.195:5000/predict?data={"income_annum": ${totalIncome}, "loan_amount": ${loan_amount}, "loan_term": ${loan_tenure}, "cibil_score": ${cibil_score}}&model_path=/home/ubuntu/Downloads/hackbanglore/reg_model.pkl`
+            ).then(res => res.json());
+            return await new Company({ annual_revenue: totalIncome, loan_tenure, loan_amount, id: company_id.id, month_wise_deposits: monthlyDeposits, month_wise_withdrawal: monthlyWithdrawals, financial_health_score }).save();
+        } catch (err) {
+            console.log(err);
+            throw new Error(err);
+        }
+          }
 }
 
 
