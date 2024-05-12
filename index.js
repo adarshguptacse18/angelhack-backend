@@ -181,7 +181,7 @@ app.get('/getExplanation', async (req, res, next) => {
 
 app.use((err, req, res, next) => {
     const status = err.status || 500;
-    console.log(...err);
+    console.log(err);
     res.status(status).json(err.message);
 });
 

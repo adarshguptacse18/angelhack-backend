@@ -39,14 +39,14 @@ async function getExplanation(companyData) {
             threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
         },
     ];
-
+    console.log({companyData});
     const chat = model.startChat({
         generationConfig,
         safetySettings,
         history: [
             {
                 role: "user",
-                parts: [{ text: `Can  you try to explain the ML model here?\nYou are given dataset of a company.  Where the model predicted the financial_health_score as 70 (which ranges from 0 to 100). Main key areas are age (in months), credit_score (which ranges from 0 to 900), loan_amount, loan_tenure, late_payments, month_wise_deposts, month_wise_withdrawal. Can you give the response a markup format where only positive and negative factors are written in bullet points? ${companyData}` }],
+                parts: [{ text: `Can  you try to explain how to improve financial score for this data?\nYou are given dataset of a company.  Where the model predicted the financial_health_score as 70 (which ranges from 0 to 100). Main key areas are age (in months), credit_score (which ranges from 0 to 900), loan_amount, loan_tenure, late_payments, month_wise_deposts, month_wise_withdrawal. Can you give the response a markup format where only positive and negative factors are written in bullet points? ${companyData}` }],
             }
         ],
     });

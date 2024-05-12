@@ -14,19 +14,20 @@ class BalanceSheetService {
         }, 0);
         const { user_id, loan_tenure, loan_amount } = args;
         console.log({ totalIncome, user_id, loan_tenure, loan_amount });
-        const { id, cibil_score} = await new Company({ user_id }).getCompanyDataFromUserId();
+        const { id, credit_score} = await new Company({ user_id }).getCompanyDataFromUserId();
         console.log({ totalIncome, user_id, loan_tenure, loan_amount });
-        // try {
-        //     const { score: financial_health_score } = await fetch(
-        //         `http://13.201.198.195:5000/predict?data={"income_annum": ${totalIncome}, "loan_amount": ${loan_amount}, "loan_term": ${loan_tenure}, "cibil_score": ${cibil_score}}&model_path=/home/ubuntu/Downloads/hackbanglore/reg_model.pkl`
-        //     ).then(res => res.json());
-        const financial_health_score = 80;
+        try {
+            console.log(`http://13.201.198.195:5000/predict?data={"income_annum": ${totalIncome}, "loan_amount": ${loan_amount}, "loan_term": ${loan_tenure}, "cibil_score": ${credit_score}}&model_path=/home/ubuntu/Downloads/hackbanglore/reg_model.pkl`)
+            const { score: financial_health_score } = await fetch(
+                `http://13.201.198.195:5000/predict?data={"income_annum": ${totalIncome}, "loan_amount": ${loan_amount}, "loan_term": ${loan_tenure}, "cibil_score": ${credit_score}}&model_path=/home/ubuntu/Downloads/hackbanglore/reg_model.pkl`
+            ).then(res => res.json());
+        // const financial_health_score = 80;
             return await new Company({ annual_revenue: totalIncome, loan_tenure, loan_amount, id, month_wise_deposits: monthlyDeposits, month_wise_withdrawal: monthlyWithdrawals, financial_health_score }).save();
-        // } catch (err) {
-        //     console.log(err);
-        //     conosle.log(`http://13.201.198.195:5000/predict?data={"income_annum": ${totalIncome}, "loan_amount": ${loan_amount}, "loan_term": ${loan_tenure}, "cibil_score": ${cibil_score}}&model_path=/home/ubuntu/Downloads/hackbanglore/reg_model.pkl`);
-        //     throw new Error(err);
-        // }
+        } catch (err) {
+            console.log(err);
+            console.log(`http://13.201.198.195:5000/predict?data={"income_annum": ${totalIncome}, "loan_amount": ${loan_amount}, "loan_term": ${loan_tenure}, "cibil_score": ${credit_score}}&model_path=/home/ubuntu/Downloads/hackbanglore/reg_model.pkl`);
+            throw new Error(err);
+        }
     }
 }
 

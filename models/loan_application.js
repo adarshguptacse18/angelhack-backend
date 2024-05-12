@@ -36,7 +36,7 @@ class LoanApplication {
             if (result.rows.length > 0) {
                 return result.rows[0];
             }
-            throw new Error("loan application not found");
+            return [];
         } catch (err) {
             console.log(err); User
             throw new Error(err);
@@ -66,7 +66,7 @@ class LoanApplication {
             if (result.rows.length > 0) {
                 return result.rows;
             }
-            throw new Error("no loans found not found");
+            return [];
         } catch (err) {
             console.log(err);
             throw new Error(err);
