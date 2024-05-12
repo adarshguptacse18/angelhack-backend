@@ -18,7 +18,7 @@ class Company {
         this.loan_tenure = loan_tenure;
         this.month_wise_deposits = month_wise_deposits;
         this.month_wise_withdrawal = month_wise_withdrawal;
-        this.financial_health_score = Math.floor(financial_health_score);
+        this.financial_health_score = financial_health_score && Math.floor(financial_health_score);
     }
 
     async save() {
@@ -50,12 +50,14 @@ class Company {
             // update all the fields into company table
             const statement = 'INSERT INTO company_info(name, user_id, pan, annual_revenue, annual_profit, credit_score, late_payments, loan_amount, loan_tenure, financial_health_score, month_wise_deposits, month_wise_withdrawal, age, size, type) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)';
             const values = [this.name, this.user_id, this.pan, this.annual_revenue, this.annual_profit, this.credit_score, this.late_payments, this.loan_amount, this.loan_tenure, this.financial_health_score, this.month_wise_deposits, this.month_wise_withdrawal, this.age, this.size, this.type];
+            console.log(statement, values);
             const result = await db.update(statement, values);
             if (result.rows.length > 0) {
                 return result.rows[0];
             }
             throw new Error("Unable to create company");
         } catch (err) {
+            console.log(err);
             throw new Error(err);
         }
     }

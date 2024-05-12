@@ -15,7 +15,7 @@ CREATE TABLE COMPANY_INFO (
     "name" text,
     "type" text,
     "age" text,
-    "size" INTEGER,
+    "size" text,
     "user_id" text,
     "pan"  char(10),
     "annual_revenue" BIGINT ,
