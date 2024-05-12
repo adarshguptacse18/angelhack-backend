@@ -1,4 +1,8 @@
-# Loan Matching Platform
+# FinMatch
+
+# Important code links
+- ML: https://github.com/gun-py/angelhack-ml
+- Frontend: https://github.com/akasaurabhverma/hackbangalore
 
 ## Description
 
