@@ -166,14 +166,21 @@ app.get('/getAllLoansByLender', async (req, res) => {
     res.send(result);
 });
 
-app.get('/getExplanation', async (req, res) => {
-    const {user_id} = req.query;
-    const companyData = await new Company({ user_id }).getCompanyDataFromUserId();
-    res.send(await getExplanation(companyData));
+app.get('/getExplanation', async (req, res, next) => {
+
+    try {
+        const { user_id } = req.query;
+        const companyData = await new Company({ user_id }).getCompanyDataFromUserId();
+        res.send(await getExplanation(companyData));
+    } catch(err) {
+        console.log(err);
+        next(err);
+    }
 });
 
 app.use((err, req, res, next) => {
     const status = err.status || 500;
+    console.log(...err);
     res.status(status).json(err.message);
 });
 
