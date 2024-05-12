@@ -27,6 +27,7 @@ const Company = require('./models/company');
 
 const app = express();
 app.use(cors());
+app.use(express.static('public'));
 app.use(express.json({ limit: '50mb' }));
 
 app.use(morgan('tiny'));
